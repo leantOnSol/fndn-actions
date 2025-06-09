@@ -48,29 +48,15 @@ runs:
     - name: Download and Install Solana
       if: inputs.cache != 'true' || steps.cache.outputs.cache-hit != 'true'
       run: |
-        # Create install directory
         mkdir -p ~/.local/share/solana/install/releases/${{ inputs.version }}
-        
-        # Download installer
-        curl -L -o solana-install-init \
-          https://github.com/solana-labs/solana/releases/download/v${{ inputs.version }}/${{ steps.platform.outputs.installer }}
-        
-        # Make installer executable
-        chmod +x solana-install-init
-        
-        # Run installer
-        ./solana-install-init --version ${{ inputs.version }}
-        
-        # Add Solana to current session PATH
+        cd ~/.local/share/solana/install/releases/${{ inputs.version }}
+        curl -L -o solana-release.tar.bz2 \
+          https://github.com/solana-labs/solana/releases/download/v${{ inputs.version }}/${{ steps.platform.outputs.release }}
+        tar jxf solana-release.tar.bz2
+        cd ~/.local/share/solana/install
+        rm -f active_release
+        ln -s releases/${{ inputs.version }}/solana-release active_release
         export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-      shell: bash
-
-    - name: Add Solana to Path
-      run: |
         echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
-      shell: bash
-
-    - name: Verify Solana install
-      run: |
         solana --version
       shell: bash
