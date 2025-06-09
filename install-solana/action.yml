@@ -50,8 +50,19 @@ runs:
       run: |
         mkdir -p ~/.local/share/solana/install/releases/${{ inputs.version }}
         cd ~/.local/share/solana/install/releases/${{ inputs.version }}
-        curl -L -o solana-release.tar.bz2 \
-          https://github.com/solana-labs/solana/releases/download/v${{ inputs.version }}/${{ steps.platform.outputs.release }}
+        if curl -f -L -o solana-release.tar.bz2 \
+          https://github.com/anza-xyz/agave/releases/download/v${{ inputs.version }}/${{ steps.platform.outputs.release }}; then
+          echo "Successfully downloaded from anza-xyz/agave"
+        else
+          echo "Version not found in anza releases, trying solana-labs/solana..."
+          if curl -f -L -o solana-release.tar.bz2 \
+            https://github.com/solana-labs/solana/releases/download/v${{ inputs.version }}/${{ steps.platform.outputs.release }}; then
+            echo "Successfully downloaded from solana-labs/solana"
+          else
+            echo "Version not found in solana releases"
+            exit 1
+          fi
+        fi
         tar jxf solana-release.tar.bz2
         cd ~/.local/share/solana/install
         rm -f active_release
