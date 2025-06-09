@@ -33,7 +33,7 @@ runs:
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             echo "Homebrew installed successfully"
           fi
-          brew install pkg-config libudev protobuf llvm coreutils
+          brew install pkg-config protobuf llvm coreutils
         fi
       shell: bash
 
