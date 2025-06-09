@@ -19,9 +19,6 @@ jobs:
       - name: Install Rust
         uses: ./install-rust
 
-      - name: Install cargo-release
-        uses: ./install-cargo-release
-
       - name: Install Solana
         uses: ./install-solana
         with:
