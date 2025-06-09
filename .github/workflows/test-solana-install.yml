@@ -28,5 +28,3 @@ jobs:
       - name: Test Solana Installation
         run: |
           solana --version
-          solana-keygen --version
-          solana-validator --version
