@@ -45,6 +45,17 @@ runs:
         path: ~/.local/share/solana/install/releases/${{ inputs.version }}
         key: ${{ runner.os }}-solana-installer-v${{ inputs.version }}
 
+    - name: Setup Cached Solana
+      if: inputs.cache == 'true' && steps.cache.outputs.cache-hit == 'true'
+      run: |
+        cd ~/.local/share/solana/install
+        rm -f active_release
+        ln -s releases/${{ inputs.version }}/solana-release active_release
+        export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+        echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+        solana --version
+      shell: bash
+
     - name: Download and Install Solana
       if: inputs.cache != 'true' || steps.cache.outputs.cache-hit != 'true'
       run: |

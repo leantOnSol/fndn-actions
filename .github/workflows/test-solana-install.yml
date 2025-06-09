@@ -22,7 +22,7 @@ jobs:
       - name: Install Solana
         uses: ./install-solana
         with:
-          version: '1.17.10'
+          version: ${{ inputs.version }}
           cache: true
 
       - name: Test Solana Installation
