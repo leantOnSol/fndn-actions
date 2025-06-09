@@ -2,9 +2,6 @@ name: Test Solana Install Action
 
 on:
   pull_request:
-    paths:
-      - 'actions/install-solana/**'
-      - '.github/workflows/test-solana-install.yml'
   workflow_dispatch:
     inputs:
       version:
