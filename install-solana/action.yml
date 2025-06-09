@@ -60,6 +60,9 @@ runs:
         
         # Run installer
         ./solana-install-init --version ${{ inputs.version }}
+        
+        # Add Solana to current session PATH
+        export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
       shell: bash
 
     - name: Add Solana to Path
