@@ -13,6 +13,25 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Check and Configure Rust Version
+      id: rust-version
+      run: |
+        if ! command -v rustc &> /dev/null; then
+          echo "Rust is not installed. Please install Rust first."
+          exit 1
+        fi
+        
+        # Store current rust version
+        CURRENT_VERSION=$(rustc --version | awk '{print $2}')
+        echo "Current Rust version: $CURRENT_VERSION"
+        echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        
+        if [ "$CURRENT_VERSION" != "1.80.0" ]; then
+          echo "Setting Rust version to 1.80.0"
+          rustup override set 1.80.0
+        fi
+      shell: bash
+
     - name: Cache Solana
       id: cache
       if: inputs.cache == 'true'
@@ -37,7 +56,6 @@ runs:
         fi
       shell: bash
 
-
     - name: Build Solana from Source
       if: inputs.cache != 'true' || steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -60,4 +78,11 @@ runs:
     - name: Verify Solana install
       run: |
         solana --version
+      shell: bash
+
+    - name: Restore Original Rust Version
+      if: steps.rust-version.outputs.current_version != '1.80.0'
+      run: |
+        echo "Restoring Rust to version ${{ steps.rust-version.outputs.current_version }}"
+        rustup override set ${{ steps.rust-version.outputs.current_version }}
       shell: bash
